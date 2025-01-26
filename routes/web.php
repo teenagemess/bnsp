@@ -5,6 +5,7 @@ use App\Http\Controllers\PenulisController;
 use App\Http\Controllers\RegistrasiController;
 use App\Http\Controllers\BukuController;
 use App\Http\Controllers\WelcomeController;
+use App\Http\Controllers\PinjamController;
 use App\Http\Controllers\auth\AuthenticatedSessionController;
 use Illuminate\Support\Facades\Route;
 
@@ -20,11 +21,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [WelcomeController::class, 'index'])->name('home');
+Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+
+
 
 
 
@@ -35,6 +38,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('/registrasi', RegistrasiController::class);
     Route::get('/registrasi/cetak/{id}', [RegistrasiController::class, 'cetak'])->name('registrasi.cetak');
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
+
+    Route::post('/pinjam/{id}', [WelcomeController::class, 'pinjamBuku'])->name('pinjam.buku');
 });
 
 Route::middleware(['auth', 'admin'])->group(function () {

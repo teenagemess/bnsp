@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Peminjaman;
 use App\Models\Buku;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
 class WelcomeController extends Controller
@@ -14,6 +16,29 @@ class WelcomeController extends Controller
     {
         $buku = Buku::get();
         return view('welcome', compact('buku'));
+    }
+
+    public function pinjamBuku($id)
+    {
+        // Ambil data buku berdasarkan ID
+        $buku = Buku::findOrFail($id);
+
+        // Pastikan stok buku tersedia
+        if ($buku->stok > 0) {
+            // Simpan data peminjaman
+            Peminjaman::create([
+                'user_id' => Auth::id(), // Menyimpan ID pengguna yang sedang login
+                'buku_id' => $buku->id,
+                'tanggal_pinjam' => now(),
+            ]);
+
+            // Kurangi stok buku
+            $buku->decrement('stok');
+
+            return redirect()->route('welcome')->with('success', 'Buku berhasil dipinjam.');
+        } else {
+            return redirect()->route('welcome')->with('error', 'Stok buku tidak tersedia.');
+        }
     }
 
     /**

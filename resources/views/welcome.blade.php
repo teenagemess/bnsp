@@ -184,31 +184,46 @@
 		</div>
 	</section>
 
-                @foreach ($buku as $item)
-                <div class="col-md-3">
-                    <div class="product-item">
-                        <figure class="product-style">
-                            <!-- Tampilkan gambar jika tersedia, gunakan gambar default jika tidak -->
-                            @if ($item->image)
-                                <img src="{{ asset('storage/' . $item->image) }}" class="card-img-top" alt="{{ $item->judul }}">
-                            @else
-                                <img src="{{ asset('images/default-book.jpg') }}" class="card-img-top" alt="Default Image">
-                            @endif
-                            <!-- Tombol Pinjam Buku -->
-                            <form action="{{ route('pinjam.store') }}" method="POST">
-                                @csrf
-                                <input type="hidden" name="buku_id" value="{{ $item->id }}">
-                                <button type="submit" class="add-to-cart">Pinjam Buku</button>
-                            </form>
-                        </figure>
-                        <figcaption>
-                            <h3>{{ $item->judul }}</h3>
-                            <span>{{ $item->penulis->nama ?? 'Penulis Tidak Diketahui' }}</span>
-                            <div class="item-price">Rp {{ number_format($item->harga ?? 0, 0, ',', '.') }}</div>
-                        </figcaption>
-                    </div>
-                </div>
-                @endforeach
+	<section id="featured-books" class="py-5 my-5">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-12">
+
+					<div class="section-header align-center">
+						<div class="title">
+							<span>Some quality items</span>
+						</div>
+						<h2 class="section-title">Featured Books</h2>
+					</div>
+
+					<div class="product-list" data-aos="fade-up">
+						<div class="row">
+
+                            @foreach ($buku as $item)
+                            <div class="col-md-3">
+                                <div class="product-item">
+                                    <figure class="product-style">
+                                        <!-- Tampilkan gambar jika tersedia, gunakan gambar default jika tidak -->
+                                        @if ($item->image)
+                                            <img src="{{ asset('storage/' . $item->image) }}" class="card-img-top" alt="{{ $item->judul }}">
+                                        @else
+                                            <img src="{{ asset('images/default-book.jpg') }}" class="card-img-top" alt="Default Image">
+                                        @endif
+                                        <form action="{{ route('pinjam.buku', $item->id) }}" method="POST">
+                                            @csrf
+                                            <button type="submit" class="add-to-cart">Pinjam Buku</button>
+                                        </form>
+                                    </figure>
+                                    <figcaption>
+                                        <h3>{{ $item->judul }}</h3>
+                                        <span>{{ $item->penulis->nama ?? 'Penulis Tidak Diketahui' }}</span>
+                                        <div class="item-price">Rp {{ number_format($item->harga ?? 0, 0, ',', '.') }}</div>
+                                    </figcaption>
+                                </div>
+                            </div>
+                            @endforeach
+
+
 
 						</div><!--ft-books-slider-->
 					</div><!--grid-->
