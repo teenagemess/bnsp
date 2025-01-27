@@ -12,14 +12,14 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-
+                    @can('admin')
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
                     <x-nav-link :href="route('registrasi.index')" :active="request()->routeIs('registrasi.index')">
-                        {{ __('Pinjam Buku') }}
+                        {{ __('Data Peminjam') }}
                     </x-nav-link>
-                    @can('admin')
+
                     <x-nav-link :href="route('buku.index')" :active="request()->routeIs('buku.index')">
                         {{ __('Tambah Buku') }}
                     </x-nav-link>

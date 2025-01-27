@@ -24,4 +24,10 @@ class Registrasi extends Model
     return $this->belongsTo(Buku::class, 'buku_id'); // Pastikan kolom buku_id ada di tabel registrasi
 }
 
+public function user()
+{
+    return $this->belongsTo(User::class);
+}
+
+
 }

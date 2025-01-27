@@ -17,7 +17,9 @@ class AdminSeeder extends Seeder
         User::create([
             'name' => 'Admin',
             'email' => 'admin@admin.com',
-            'password' => Hash::make('password'), // Ganti password ini
+            'password' => Hash::make('password'),
+            'alamat' => 'Default Address', // Ganti password ini
+            'no_hp' => '012345', // Ganti password ini
             'role' => 'admin',
         ]);
     }

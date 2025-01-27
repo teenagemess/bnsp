@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Registrasi;
 use App\Models\Agama;
+use App\Models\Peminjaman;
 use App\Models\Buku;
 use Barryvdh\DomPDF\Facade\Pdf;
 
@@ -18,6 +19,15 @@ class RegistrasiController extends Controller
         // Mendapatkan query pencarian dari input pengguna
         $search = $request->input('search');
 
+        $peminjaman = Peminjaman::with('user')
+        ->when($search, function ($query, $search) {
+            $query->whereHas('user', function ($query) use ($search) {
+                $query->where('name', 'like', "%{$search}%")
+                      ->orWhere('email', 'like', "%{$search}%");
+            });
+        })
+        ->paginate(10); // Pagination
+
         // Mengambil data registrasi dengan pagination dan filter pencarian jika ada
         $data = Registrasi::when($search, function ($query, $search) {
                         return $query->where('nama', 'like', "%{$search}%")
@@ -25,9 +35,10 @@ class RegistrasiController extends Controller
                     })
                     ->paginate(10); // Pagination dengan 10 item per halaman
 
+
         $count = $data->count();
 
-        return view('registrasi.index', compact('count', 'data', 'search'));
+        return view('registrasi.index', compact('count', 'data', 'search', 'peminjaman'));
     }
 
 
@@ -125,14 +136,14 @@ class RegistrasiController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($id)
-    {
-        $registrasi = Registrasi::findOrFail($id);
-        $registrasi->delete();
+    // public function destroy($id)
+    // {
+    //     $registrasi = Registrasi::findOrFail($id);
+    //     $registrasi->delete();
 
-        return redirect()->route('registrasi.index')
-                         ->with('pesan', 'Data berhasil dihapus');
-    }
+    //     return redirect()->route('registrasi.index')
+    //                      ->with('pesan', 'Data berhasil dihapus');
+    // }
 
     public function cetak($id)
     {

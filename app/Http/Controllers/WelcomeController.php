@@ -14,9 +14,32 @@ class WelcomeController extends Controller
      */
     public function index()
     {
-        $buku = Buku::get();
-        return view('welcome', compact('buku'));
+        $buku = Buku::orderBy('created_at')->paginate(4);
+            // Mengambil jumlah buku yang dipinjam oleh pengguna yang sedang login
+        $jumlahBukuDipinjam = 0;
+        if (auth()->check()) {
+            // Mengambil jumlah peminjaman yang terkait dengan user yang login
+            $jumlahBukuDipinjam = auth()->user()->peminjaman->count();
+        }
+
+
+
+        return view('welcome', compact('buku', 'jumlahBukuDipinjam'));
     }
+        public function bukufrontend()
+        {
+            $buku = Buku::get();
+                // Mengambil jumlah buku yang dipinjam oleh pengguna yang sedang login
+            $jumlahBukuDipinjam = 0;
+            if (auth()->check()) {
+                // Mengambil jumlah peminjaman yang terkait dengan user yang login
+                $jumlahBukuDipinjam = auth()->user()->peminjaman->count();
+            }
+
+
+
+            return view('buku-frontend', compact('buku', 'jumlahBukuDipinjam'));
+        }
 
     public function pinjamBuku($id)
     {
@@ -35,9 +58,9 @@ class WelcomeController extends Controller
             // Kurangi stok buku
             $buku->decrement('stok');
 
-            return redirect()->route('welcome')->with('success', 'Buku berhasil dipinjam.');
+            return redirect()->route('buku-frontend')->with('success', 'Buku berhasil dipinjam.');
         } else {
-            return redirect()->route('welcome')->with('error', 'Stok buku tidak tersedia.');
+            return redirect()->route('buku-frontend')->with('error', 'Stok buku tidak tersedia.');
         }
     }
 
